@@ -1,0 +1,78 @@
+module.exports = HTTPServer
+
+const
+  Errors = require('./Errors'),
+  Random = require('./Random'),
+  express = require('express')
+
+function HTTPServer( opt ) {
+
+  const
+    self = this,
+    app = express()
+
+  route( app )
+
+  self.app = app
+  self.close = close
+
+  listen()
+
+  function route( app ) {
+    app.get('/random/name', function ( req, res ) {
+      var name = Random.name( opt )
+      res.send( Random.name( opt, req.query ) )
+    })
+
+    app.get('/random/person', function ( req, res ) {
+      var person = Random.person( opt )
+      res.send( Random.person( opt, req.query ) )
+    })
+
+    app.get('/mailbox', function ( req, res ) {
+      res.send( self.mailbox.all() )
+    })
+
+    app.get('/fetch', function ( req, res ) {
+      var query
+
+      var first = self.mailbox.first( query )
+      if ( first ) {
+        sendMsg( first )
+        return
+      }
+
+      self.queue.wait( opt )
+        .then( function ( msg ) {
+          sendMsg( msg )
+        } )
+        .catch( Errors.TimeoutError, function () {
+          res.status( 408, 'No Mail Today' )
+          res.send( {
+            mesg: 'No Mail Today'
+          } )
+        } )
+        .catch( function ( err ) {
+          console.log( "ERR", err.stack )
+          res.status( 500 )
+          res.send( err )
+        } )
+
+      function sendMsg( msg ) {
+        res.send( msg )
+      }
+    } )
+
+
+
+  }
+
+  function listen ( ) {
+    self.server = app.listen( parseInt( opt.listen ) || 7319 )
+  }
+
+  function close () {
+    if ( self.server )
+      self.server.close()
+  }
+}

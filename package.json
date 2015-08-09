@@ -1,0 +1,21 @@
+{
+  "name": "crazymail",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "crazymail": "./bin/crazymail.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "argparse": "^1.0.2",
+    "bluebird": "^2.9.34",
+    "emailjs": "^0.3.16",
+    "express": "^4.13.3",
+    "lodash": "^3.10.1",
+    "mailparser": "^0.5.2",
+    "request": "^2.60.0",
+    "simplesmtp": "^0.3.35"
+  }
+}
