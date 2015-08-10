@@ -6,7 +6,7 @@ const
   pkg = require('../package.json')
 
 
-var args = {
+var argConfig = {
   'rate': [
     [ '-r', '--rate'],
     {
@@ -21,7 +21,8 @@ var args = {
   'firstName': [ [ '--first'], { help: 'First name', dest: 'firstName' }  ],
   'middleName': [ [ '--middle'], { help: 'Middle name', dest: 'middleName' } ],
   'lastName': [ [ '--last'], { help: 'Last name', dest: 'lastName' }  ],
-  'name': [ [ '-n','--name'], { help: 'Name' }  ]
+  'name': [ [ '-n','--name'], { help: 'Name' }  ],
+  'unicode': [ ['--unicode'], { help: 'Add a splash of unicode to names', action: 'storeTrue' }  ]
 }
 
 
@@ -36,11 +37,11 @@ var commands = {
   },
   'name': {
     help: 'Return a random funny name.',
-    args: ['firstName','middleName','lastName']
+    args: ['firstName','middleName','lastName','unicode']
   },
   'person': {
     help: 'Return a random person.',
-    args: ['firstName','middleName','lastName', 'host']
+    args: ['firstName','middleName','lastName', 'host','unicode']
   },
   'address': {
     args: ['firstName','middleName','lastName', 'host']
@@ -67,13 +68,17 @@ var subparsers = parser.addSubparsers({
 _.map( commands, function ( command, name ) {
   var subparser = subparsers.addParser( name, command )
   _.map( command.args || [] , function ( argName ) {
-    var arg = args[argName]
+    var arg = argConfig[argName]
     subparser.addArgument( arg[0], arg[1] )
 
   } )
 } )
 
 var args = parser.parseArgs();
+_.map( argConfig, function ( config, argName ) {
+  if ( args[argName] === null )
+    delete args[argName]
+} )
 
 // console.dir( args )
 
@@ -90,7 +95,7 @@ var commands = {
   },
 
   person: function (){
-    console.dir( new Random( args ).person() )
+    writeJSON( new Random( args ).person() )
   },
 
   send: function (){
@@ -109,10 +114,16 @@ var commands = {
     var client = new Crazymail.Client( args )
     client.receive( args )
       .then( function ( msg ) {
-        console.dir( msg )
+        writeJSON( data )
       } )
   }
 
 }
 
 commands[ args.command ]( )
+
+
+function writeJSON( data ) {
+  const str = JSON.stringify( data, null, 2 )
+  console.log( str )
+}

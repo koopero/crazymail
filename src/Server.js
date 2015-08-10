@@ -18,6 +18,9 @@ function Server( opt ) {
   const
     self = this
 
+  var
+    count = 0
+
   self.queue = new Queue( opt )
   self.mailbox = new Mailbox( opt )
   self.close = close
@@ -28,6 +31,8 @@ function Server( opt ) {
     self.smtp = new SMTPServer( opt )
 
     self.smtp.on('mail', function ( mesg ) {
+      mesg.index = count++
+      log( mesg )
       self.mailbox.add( mesg )
       self.queue.send( mesg )
     })
@@ -41,6 +46,13 @@ function Server( opt ) {
     self.http = new HTTPServer( opt )
     self.http.mailbox = self.mailbox
     self.http.queue = self.queue
+  }
+
+
+  return self
+
+  function log( msg ) {
+    console.dir( msg )
   }
 
   function close() {

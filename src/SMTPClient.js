@@ -16,7 +16,7 @@ function SMTPClient( opt ) {
 
   function send ( msg ) {
     const
-      server = require("emailjs").server.connect( serverOpts )
+      server = require('emailjs').server.connect( serverOpts )
 
     msg = _.extend( {
       text:     self.random.text( opt.text ),
@@ -25,7 +25,8 @@ function SMTPClient( opt ) {
       from:     self.random.address( opt.from )
     }, msg )
 
-    // console.log( "Send", msg )
+    msg = _.pick( msg, 'text', 'subject', 'from', 'to', 'cc', 'bcc', 'attachment')
+
 
     return new Promise( function ( resolve, reject ) {
       server.send( msg, function ( err, message ) {

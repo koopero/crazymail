@@ -21,12 +21,13 @@ var Crazyclient = new Crazymail.Client( {
 })
 
 var person = Crazyclient.random.person()
-// person will be look like this:
+// person will be look something like this:
 {
   firstName: 'Hans',
   lastName: 'Flounder',
   name: 'Hans Flounder',
-  email: 'hans_flounder@example.com'
+  email: 'hans_flounder_678@example.com',
+  host: 'example.com'
 }
 
 // Now perform your automated tests.

@@ -1,7 +1,9 @@
 module.exports = Random
 
 const
-  _ = require('lodash')
+  _ = require('lodash'),
+  transliteration = require('transliteration'),
+  Util = require('./Util')
 
 function Random() {
   var
@@ -11,39 +13,20 @@ function Random() {
 
   self.firstNames = require('./random/firstNames')
   self.firstName = function () {
-    return fnRandomFromKey( 'firstNames' )
+    return encoding( fnRandomFromKey( 'firstNames' ), arguments )
   }
   self.lastNames = require('./random/lastNames')
   self.lastName = function () {
-    return fnRandomFromKey( 'lastNames' )
+    return encoding( fnRandomFromKey( 'lastNames' ), arguments )
   }
 
   self.middleNames = require('./random/middleNames')
   self.middleName = function () {
-    return fnRandomFromKey( 'middleNames' )
+    return encoding( fnRandomFromKey( 'middleNames' ), arguments )
   }
 
   self.name = function() {
-    var person = congeal( {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      name: ''
-    }, arguments )
-
-    if ( chance( 0.93 ) )
-      person.firstName = person.firstName || self.firstName( )
-
-    if ( chance( 0.4 ) )
-      person.middleName = person.middleName || self.middleName()
-
-    if ( !person.firstName || chance( 0.96 ) )
-      person.lastName = person.lastName || self.lastName()
-
-    if ( !person.name ) {
-      person.name = _( [ person.firstName, person.middleName, person.lastName ] ).compact().join(' ')
-    }
-
+    var person = self.person( arguments )
     return person.name
   }
 
@@ -53,13 +36,23 @@ function Random() {
       middleName: '',
       lastName: '',
       name: '',
-      email: '',
+      address: '',
     }, arguments )
 
-    person.firstName = person.firstName || self.firstName( opt )
-    person.lastName  = person.lastName  || self.lastName ( opt )
-    person.name = person.name ||  self.name( person )
-    person.email = self.email( arguments, person )
+    if ( !person.name ) {
+      if ( chance( 0.93 ) )
+        person.firstName = person.firstName || self.firstName( arguments )
+
+      if ( chance( 0.4 ) )
+        person.middleName = person.middleName || self.middleName( arguments )
+
+      if ( !person.firstName || chance( 0.96 ) )
+        person.lastName = person.lastName || self.lastName( arguments )
+
+      person.name = _( [ person.firstName, person.middleName, person.lastName ] ).compact().join(' ')
+    }
+
+    person.address = self.address( arguments, person )
 
     return person
   }
@@ -78,7 +71,7 @@ function Random() {
   self.address = function( opt ) {
     var person = self.person( arguments )
 
-    return person.name + ' <'+person.email+'>'
+    return person.name + ' <'+person.address+'>'
   }
 
   self.delimiter = function() {
@@ -88,14 +81,14 @@ function Random() {
             ''
   }
 
-  self.email = function( opt ) {
+  self.address = function( opt ) {
     var person = congeal( {
       firstName: '',
       lastName: '',
       name: '',
       number: 0,
       host: '',
-      email: ''
+      address: ''
     }, arguments )
 
     person.name = person.name || self.name( arguments )
@@ -113,16 +106,15 @@ function Random() {
 
     var name = segs.join(' ')
     name = name.toLowerCase()
+    name = transliteration( name )
     name = name.replace( /[^a-z0-9]+/g, self.delimiter )
 
 
     person.host = person.host || self.host( arguments )
 
-    var email = person.email || name+'@'+person.host
+    var address = person.address || name+'@'+person.host
 
-
-
-    return email
+    return address
   }
 
   self.subject = function ( opt ) {
@@ -153,6 +145,31 @@ function Random() {
         }
       })
     }
+  }
+
+  function encoding( str, args ) {
+    var opt = congeal( {
+      unicode: '',
+      ascii: ''
+    }, args )
+
+    if ( opt.unicode ) {
+      var
+        tries = 400,
+        dict = require('./random/unicode')
+
+      while ( tries && Util.isAscii( str ) ) {
+        str = str.replace( /[A-Za-z]/g, function ( char ) {
+          if ( chance( 0.94 ) || !dict[char] )
+            return char
+
+          return fnRandomFromList( dict[char] )
+        } )
+        tries --
+      }
+    }
+
+    return str
   }
 
   function chance( chance ) {

@@ -6,7 +6,6 @@ const
 function Mailbox( opt ) {
   const
     self = this,
-    counter = 0,
     size = 2,
     messages = []
 
@@ -17,8 +16,6 @@ function Mailbox( opt ) {
   return self
 
   function add( msg ) {
-    msg.index = counter
-    counter++
     messages.push( msg )
     clean()
   }

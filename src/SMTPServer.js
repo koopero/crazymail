@@ -47,7 +47,6 @@ function SMTPServer ( opt ) {
     });
 
     parser.on("end", function(mail){
-      console.log( "GOT", mail )
       self.emit( 'mail', mail )
     });
     req.pipe( parser )

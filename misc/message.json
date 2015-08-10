@@ -1,0 +1,21 @@
+{ text: 'Hello, world!\n\n',
+  headers:
+   { received: 'from panjandrum.local (::ffff:127.0.0.1) by panjandrum.local with SMTP; Sun Aug 09 2015 19:22:34 GMT-0700 (PDT)',
+     'message-id': '<1439173353969.0.27454@panjandrum.local>',
+     date: 'Sun, 09 Aug 2015 19:22:33 -0700',
+     subject: 'Testing 123',
+     from: 'Wilma Bluntnose <bluntnose@appmaker.com>',
+     to: 'Mya Quagmire MacBanjo <myaquagmire.macbanjo@djibouti.com>',
+     'content-type': 'text/plain; charset=utf-8',
+     'content-transfer-encoding': '7bit',
+     'content-disposition': 'inline' },
+  subject: 'Testing 123',
+  messageId: '1439173353969.0.27454@panjandrum.local',
+  priority: 'normal',
+  from: [ { address: 'bluntnose@appmaker.com', name: 'Wilma Bluntnose' } ],
+  to:
+   [ { address: 'myaquagmire.macbanjo@djibouti.com',
+       name: 'Mya Quagmire MacBanjo' } ],
+  date: Sun Aug 09 2015 19:22:33 GMT-0700 (PDT),
+  receivedDate: Sun Aug 09 2015 19:22:34 GMT-0700 (PDT),
+  index: 0 }
