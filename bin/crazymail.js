@@ -16,12 +16,12 @@ var args = {
       help: 'Milliseconds between messages'
     }
   ],
+  'subject': [ [ '--subject'], { help: 'Subject' }  ],
   'host': [ [ '--host'], { help: 'Hostname' }  ],
   'firstName': [ [ '--first'], { help: 'First name', dest: 'firstName' }  ],
   'middleName': [ [ '--middle'], { help: 'Middle name', dest: 'middleName' } ],
   'lastName': [ [ '--last'], { help: 'Last name', dest: 'lastName' }  ],
-  'name': [ [ '-n','--name'], { help: 'Name' }  ],
-  'host': [ [ '--host'], { help: 'Hostname' }  ]
+  'name': [ [ '-n','--name'], { help: 'Name' }  ]
 }
 
 
@@ -30,18 +30,24 @@ var commands = {
     help: 'Start server',
     args: []
   },
-  'fetch': {
-    help: 'Fetch a message from a server',
+  'receive': {
+    help: 'receive a message from a server',
     args: []
   },
   'name': {
     help: 'Return a random funny name.',
     args: ['firstName','middleName','lastName']
   },
+  'person': {
+    help: 'Return a random person.',
+    args: ['firstName','middleName','lastName', 'host']
+  },
   'address': {
     args: ['firstName','middleName','lastName', 'host']
   },
-  'send': {},
+  'send': {
+    args: ['firstName','middleName','lastName','subject','host']
+  },
   'flood': { args: ['rate','host']},
   'message': { args: [] }
 }
@@ -76,11 +82,15 @@ const
 
 var commands = {
   name: function (){
-    console.log( Random.name( args ) )
+    console.log( new Random( args ).name() )
   },
 
   address: function (){
-    console.log( Random.address( args ) )
+    console.log( new Random( args ).address() )
+  },
+
+  person: function (){
+    console.dir( new Random( args ).person() )
   },
 
   send: function (){
@@ -95,9 +105,9 @@ var commands = {
       server = new Crazymail.Server( args )
   },
 
-  fetch: function() {
+  receive: function() {
     var client = new Crazymail.Client( args )
-    client.fetch( args )
+    client.receive( args )
       .then( function ( msg ) {
         console.dir( msg )
       } )

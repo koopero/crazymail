@@ -11,6 +11,7 @@ function SMTPClient( opt ) {
 
   // console.log('serverOpts', serverOpts )
 
+  self.random = new Random( opt )
   self.send = send
 
   function send ( msg ) {
@@ -18,10 +19,10 @@ function SMTPClient( opt ) {
       server = require("emailjs").server.connect( serverOpts )
 
     msg = _.extend( {
-      text: Random.text( opt.text ),
-      subject: Random.subject( opt.subject ),
-      to: Random.address( opt, opt.to ),
-      from: Random.address( opt.from )
+      text:     self.random.text( opt.text ),
+      subject:  self.random.subject( opt.subject ),
+      to:       self.random.address( opt, opt.to ),
+      from:     self.random.address( opt.from )
     }, msg )
 
     // console.log( "Send", msg )
@@ -29,9 +30,9 @@ function SMTPClient( opt ) {
     return new Promise( function ( resolve, reject ) {
       server.send( msg, function ( err, message ) {
         if ( err ) {
-          console.log('ERR!', err, msg )
+          // console.log('ERR!', err, msg )
           reject( err )
-          return 
+          return
         }
 
         resolve( message )

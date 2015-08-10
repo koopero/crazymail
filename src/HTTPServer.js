@@ -33,7 +33,7 @@ function HTTPServer( opt ) {
       res.send( self.mailbox.all() )
     })
 
-    app.get('/fetch', function ( req, res ) {
+    app.get('/receive', function ( req, res ) {
       var query
 
       var first = self.mailbox.first( query )

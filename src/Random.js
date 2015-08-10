@@ -1,10 +1,13 @@
+module.exports = Random
+
 const
   _ = require('lodash')
 
-module.exports = new Random()
-
 function Random() {
-  var self = this
+  var
+    self = this
+
+  self.arguments = arguments
 
   self.firstNames = require('./random/firstNames')
   self.firstName = function () {
@@ -137,6 +140,7 @@ function Random() {
   function congeal( defaults, args ) {
     const keys = _.keys( defaults )
 
+    congealArr( self.arguments )
     congealArr( _.slice( arguments, 1 ) )
     return defaults
 
