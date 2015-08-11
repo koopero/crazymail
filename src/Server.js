@@ -57,16 +57,12 @@ function Server( opt ) {
 
   function onMessage( mesg ) {
     mesg.index = ++count
+
     if ( opt.log )
-      Log.message( mesg )
+      Log.receive( mesg )
+
     self.mailbox.add( mesg )
     self.queue.send( mesg )
-  }
-
-  function onSubserverOpen() {
-    if ( httpComplete && smtpComplete ) {
-      self.emit('open')
-    }
   }
 
   function close() {

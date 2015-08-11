@@ -5,6 +5,8 @@ const
   Query = require('./Query'),
   Random = require('./Random'),
   SMTPClient = require('./SMTPClient'),
+  Log = require('./Log'),
+  Util = require('./Util'),
   urllib = require('url'),
   request = require('request')
 
@@ -15,15 +17,41 @@ function Client( opt ) {
   self.url = 'http://localhost:7319'
   self.random = new Random( opt )
   self.smtp = new SMTPClient( opt )
-  self.send = self.smtp.send.bind( self.smtp )
+  self.send = send
   self.receive = receive
   self.flood = flood
 
 
+  function send () {
+    var msg = Util.congeal( {
+      to: '',
+      from: '',
+      subject: '',
+      text: ''
+    }, arguments )
+
+    msg.to = msg.to || self.random.address( opt, arguments )
+    msg.from = msg.from || self.random.address( opt, arguments )
+    msg.subject = msg.subject || self.random.subject( opt, arguments )
+    msg.text = msg.text || self.random.text( opt, arguments )
+
+    if ( opt.log ) {
+      Log.send( msg )
+    }
+
+    if ( self.smtp )
+      return self.smtp.send( msg )
+  }
+
   function flood ( delay ) {
+    var opt = Util.congeal( {
+      delay: 1
+    }, arguments )
+
     var
-      args = _.slice( arguments, 1 ),
-      next = setTimeout.bind( null, send, parseInt( delay ) || 50 )
+      args = arguments,
+      next = setTimeout.bind( null, send, parseInt( opt.delay ) || 1 ),
+
       run = true
 
     send()
@@ -33,6 +61,8 @@ function Client( opt ) {
       if ( run ) {
         self.send( args ).then( function () {
           next()
+        }).catch( function ( err ) {
+          console.log( "flood error", err.stack )
         })
       }
     }

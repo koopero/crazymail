@@ -1,10 +1,10 @@
 module.exports = SMTPServer
 
-const
-  _ = require('lodash'),
-  Promise = require('bluebird'),
-  util = require('util'),
-  events = require('events')
+var _ = require('lodash')
+  , Errors = require('./Errors')
+  , Promise = require('bluebird')
+  , util = require('util')
+  , events = require('events')
 
 util.inherits( SMTPServer, events.EventEmitter )
 
@@ -45,9 +45,10 @@ function SMTPServer ( opt ) {
 
   function open() {
     return new Promise( function ( resolve, reject ) {
-      simpleServer.listen( parseInt( opt.smtp ) || 25, function ( err ) {
+      var port = parseInt( opt.smtp ) || 25
+      simpleServer.listen( port, function ( err ) {
         if ( err ) {
-          reject( err )
+          reject( new Errors.PortError( err, port ) )
         } else {
           resolve()
         }

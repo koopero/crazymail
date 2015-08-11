@@ -18,31 +18,9 @@ function SMTPClient( opt ) {
   self.random = new Random( opt )
   self.send = send
 
-  function send () {
-    var msg = Util.congeal( {
-      to: '',
-      from: '',
-      subject: '',
-      text: ''
-    }, arguments )
-
-    msg.to = msg.to || self.random.address( opt, arguments )
-    msg.from = msg.from || self.random.address( opt, arguments )
-    msg.subject = msg.subject || self.random.subject( opt, arguments )
-    msg.text = msg.text || self.random.text( opt, arguments )
-
+  function send ( msg ) {
     const
       server = require('emailjs').server.connect( serverOpts )
-
-    // msg = _.extend( {
-    //   text:     self.random.text( opt, msg ),
-    //   subject:  self.random.subject( opt, msg ),
-    //   to:       self.random.address( opt, opt.to ),
-    //   from:     self.random.address( opt.from )
-    // }, msg )
-    //
-    // msg = _.pick( msg, 'text', 'subject', 'from', 'to', 'cc', 'bcc', 'attachment')
-
 
     return new Promise( function ( resolve, reject ) {
       server.send( msg, function ( err, message ) {

@@ -71,7 +71,7 @@ function Random() {
   self.address = function( opt ) {
     var person = self.person( arguments )
 
-    return person.name + ' <'+person.address+'>'
+    return '"'+person.name + '" <'+person.address+'>'
   }
 
   self.delimiter = function() {
@@ -97,7 +97,7 @@ function Random() {
       segs.push( String( person.number || _.random( 200, 4000, false ) ) )
     }
 
-    if ( chance( 0.5 ) ) {
+    if ( chance( 0.5 ) && segs.length > 1 ) {
       var ind = Math.floor( _.random( 0.5, segs.length - 1.5 ) )
       segs.splice( ind, 1 )
     }

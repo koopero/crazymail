@@ -16,6 +16,7 @@ var argConfig = {
       help: 'Milliseconds between messages'
     }
   ],
+  'log': [ [ '-v', '--verbose'], { help: 'Log all messages', action: 'storeTrue', dest: 'log' }  ],
   'subject': [ [ '--subject'], { help: 'Subject' }  ],
   'host': [ [ '--host'], { help: 'Hostname' }  ],
   'firstName': [ [ '--first'], { help: 'First name', dest: 'firstName' }  ],
@@ -29,7 +30,7 @@ var argConfig = {
 var commands = {
   'server': {
     help: 'Start server',
-    args: []
+    args: ['log']
   },
   'receive': {
     help: 'receive a message from a server',
@@ -47,9 +48,9 @@ var commands = {
     args: ['firstName','middleName','lastName', 'host']
   },
   'send': {
-    args: ['firstName','middleName','lastName','subject','host']
+    args: ['log','firstName','middleName','lastName','subject','host','unicode']
   },
-  'flood': { args: ['rate','host']},
+  'flood': { args: ['log','firstName','middleName','lastName','subject','rate','host','unicode']},
   'message': { args: [] }
 }
 
@@ -102,12 +103,21 @@ var commands = {
     var
       client = new Crazymail.Client( args )
 
-    client.send( args )
+    finish( client.send( args ) )
+  },
+
+  flood: function (){
+    var
+      client = new Crazymail.Client( args )
+
+    client.flood( args )
   },
 
   server: function() {
     var
       server = new Crazymail.Server( args )
+
+    finish( server.open() )
   },
 
   receive: function() {
@@ -122,6 +132,15 @@ var commands = {
 
 commands[ args.command ]( )
 
+function finish( promise ) {
+  Promise.resolve( promise ).then( function ( result ) {
+    if ( result )
+      writeJSON( result )
+  }).catch( function( err ) {
+    console.error( err )
+    process.exit( 1 )
+  })
+}
 
 function writeJSON( data ) {
   const str = JSON.stringify( data, null, 2 )

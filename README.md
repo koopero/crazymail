@@ -1,4 +1,4 @@
-`Crazymail` is a simple SMTP mail server designed to aide automated testing of web applications. It receives email all incoming mail on port 25 and makes it available over HTTP.
+`Crazymail` is a simple SMTP mail server designed to aide automated testing of web applications. It receives email all incoming mail on port 25 and makes it available to a client over HTTP.
 
 # Example
 
@@ -26,7 +26,7 @@ var person = Crazyclient.random.person()
   firstName: 'Hans',
   lastName: 'Flounder',
   name: 'Hans Flounder',
-  email: 'hans_flounder_678@example.com',
+  address: 'hans_flounder_678@example.com',
   host: 'example.com'
 }
 

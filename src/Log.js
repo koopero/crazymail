@@ -2,9 +2,22 @@ const
   _ = require('lodash'),
   chalk = require('chalk')
 
-exports.message = function ( mesg ) {
+exports.send = function ( mesg ) {
   console.log()
-  console.log( chalk.blue('index:   ') + '%d', mesg.index )
+  console.log( chalk.bold.red ('SEND') )
+
+  exports.message( mesg )
+}
+
+exports.receive = function ( mesg ) {
+  console.log()
+  console.log( chalk.bold.green ('RECEIVE  '), mesg.index )
+
+  exports.message( mesg )
+}
+
+
+exports.message = function ( mesg ) {
   console.log( chalk.blue('to:      ') + '%s', formatAddress( mesg.to ) )
   console.log( chalk.blue('from:    ') + '%s', formatAddress( mesg.from ) )
   console.log( chalk.blue('subject: ') + '%s', mesg.subject )
@@ -13,6 +26,9 @@ exports.message = function ( mesg ) {
   function formatAddress( address ) {
     if ( _.isArray( address ) )
       return _.map( address, formatAddress ).join(', ')
+
+    if ( _.isString( address ) )
+      return address
 
     return address.name ? address.name + ' <'+address.address+'>' : address.address
   }
