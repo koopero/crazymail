@@ -13,7 +13,7 @@ function SMTPServer ( opt ) {
   events.EventEmitter.call( this )
 
   opt = _.defaults( opt, {
-    port: 25
+    smtp: 25
   } )
 
   const
@@ -21,17 +21,8 @@ function SMTPServer ( opt ) {
     serverOpt = _.extend( {}, opt ),
     simpleServer = require('simplesmtp').createSimpleServer( serverOpt, onRequest )
 
+  self.open = open
   self.close = close
-
-  if ( opt.port ) {
-    simpleServer.listen( opt.port, function ( err ) {
-      if ( err ) {
-        self.emit( 'error', err )
-      } else {
-        self.emit( 'open' )
-      }
-    })
-  }
 
   function onRequest( req ) {
     const
@@ -50,6 +41,18 @@ function SMTPServer ( opt ) {
       self.emit( 'mail', mail )
     });
     req.pipe( parser )
+  }
+
+  function open() {
+    return new Promise( function ( resolve, reject ) {
+      simpleServer.listen( parseInt( opt.smtp ) || 25, function ( err ) {
+        if ( err ) {
+          reject( err )
+        } else {
+          resolve()
+        }
+      })
+    })
   }
 
   function close() {

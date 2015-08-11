@@ -4,7 +4,6 @@ const
   Errors = require('./Errors'),
   Random = require('./Random'),
   express = require('express')
-
 function HTTPServer( opt ) {
 
   const
@@ -14,9 +13,10 @@ function HTTPServer( opt ) {
   route( app )
 
   self.app = app
+  self.open = open
   self.close = close
 
-  listen()
+  return self
 
   function route( app ) {
     app.get('/random/name', function ( req, res ) {
@@ -34,7 +34,7 @@ function HTTPServer( opt ) {
     })
 
     app.get('/receive', function ( req, res ) {
-      var query
+      var query = req.query
 
       var first = self.mailbox.first( query )
       if ( first ) {
@@ -63,16 +63,32 @@ function HTTPServer( opt ) {
       }
     } )
 
-
-
   }
 
-  function listen ( ) {
-    self.server = app.listen( parseInt( opt.listen ) || 7319 )
+  function open ( ) {
+    return new Promise( function ( resolve, reject ) {
+      self.server = app.listen( parseInt( opt.listen ) || 7319, function ( err ) {
+        if ( err )
+          reject( err )
+        else
+          resolve()
+      } )
+    } )
   }
 
   function close () {
-    if ( self.server )
-      self.server.close()
+    return new Promise( function ( resolve, reject ) {
+      if ( self.server ) {
+        self.server.close( function ( err ) {
+          if ( err )
+            reject( err )
+          else
+            resolve()
+        })
+      } else {
+        resolve()
+      }
+    } )
   }
+
 }

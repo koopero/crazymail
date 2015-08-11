@@ -52,7 +52,7 @@ function Random() {
       person.name = _( [ person.firstName, person.middleName, person.lastName ] ).compact().join(' ')
     }
 
-    person.address = self.address( arguments, person )
+    person.address = self.email( arguments, person )
 
     return person
   }
@@ -81,10 +81,8 @@ function Random() {
             ''
   }
 
-  self.address = function( opt ) {
+  self.email = function( opt ) {
     var person = congeal( {
-      firstName: '',
-      lastName: '',
       name: '',
       number: 0,
       host: '',

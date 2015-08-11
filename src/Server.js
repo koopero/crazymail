@@ -6,14 +6,20 @@ const
   SMTPClient = require('./SMTPClient'),
   SMTPServer = require('./SMTPServer'),
   Mailbox = require('./Mailbox'),
-  Queue = require('./Queue' )
+  Queue = require('./Queue'),
+  Log = require('./Log'),
+  util = require('util'),
+  events = require('events')
 
+util.inherits( Server, events.EventEmitter )
 
 function Server( opt ) {
   opt = _.defaults( opt || {}, {
     smtp: true,
     http: true
   })
+
+  events.EventEmitter.call( this )
 
   const
     self = this
@@ -23,46 +29,57 @@ function Server( opt ) {
 
   self.queue = new Queue( opt )
   self.mailbox = new Mailbox( opt )
+  self.open = open
   self.close = close
   self.smtpClient = new SMTPClient( opt )
 
-
-  if ( opt.smtp ) {
-    self.smtp = new SMTPServer( opt )
-
-    self.smtp.on('mail', function ( mesg ) {
-      mesg.index = count++
-      log( mesg )
-      self.mailbox.add( mesg )
-      self.queue.send( mesg )
-    })
-
-    self.smtp.on('open', function( ) {
-
-    })
-  }
-
-  if ( opt.http ) {
-    self.http = new HTTPServer( opt )
-    self.http.mailbox = self.mailbox
-    self.http.queue = self.queue
-  }
-
-
   return self
 
-  function log( msg ) {
-    console.dir( msg )
+
+  function open () {
+    var promises = []
+
+    if ( opt.smtp ) {
+      self.smtp = new SMTPServer( opt )
+      self.smtp.on('mail', onMessage )
+      promises.push( self.smtp.open() )
+    }
+
+    if ( opt.http ) {
+      self.http = new HTTPServer( opt )
+      self.http.mailbox = self.mailbox
+      self.http.queue = self.queue
+      promises.push( self.http.open() )
+    }
+
+    return Promise.all( promises )
+  }
+
+  function onMessage( mesg ) {
+    mesg.index = ++count
+    if ( opt.log )
+      Log.message( mesg )
+    self.mailbox.add( mesg )
+    self.queue.send( mesg )
+  }
+
+  function onSubserverOpen() {
+    if ( httpComplete && smtpComplete ) {
+      self.emit('open')
+    }
   }
 
   function close() {
+    var promises = []
     if ( self.smtp ) {
-      self.smtp.close()
+      promises.push( self.smtp.close() )
     }
 
     if ( self.http ) {
-      self.http.close()
+      promises.push( self.http.close() )
     }
+
+    return Promise.all( promises )
   }
 
 

@@ -1,16 +1,28 @@
 {
   "name": "crazymail",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A crazy simple SMTP server designed for autmated testing of web applications",
   "main": "index.js",
   "bin": {
     "crazymail": "./bin/crazymail.js"
   },
-  "author": "",
+  "author": "Samm Zuest Cooper <koopero@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koopero/crazymail"
+  },
+  "keywords": [
+    "smpt",
+    "email",
+    "crazy",
+    "automated test"
+  ],
+  "preferGlobal": true,
   "license": "ISC",
   "dependencies": {
     "argparse": "^1.0.2",
     "bluebird": "^2.9.34",
+    "chalk": "^1.1.0",
     "emailjs": "^0.3.16",
     "express": "^4.13.3",
     "get-stdin": "^4.0.1",

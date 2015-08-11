@@ -6,7 +6,7 @@ const
 function Mailbox( opt ) {
   const
     self = this,
-    size = 2,
+    size = 20,
     messages = []
 
   self.add = add
