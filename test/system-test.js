@@ -1,6 +1,7 @@
 const
   assert = require('chai').assert,
   request = require('request'),
+  urllib = require('url'),
   Promise = require('bluebird'),
   Crazymail = require('..')
 
@@ -9,6 +10,7 @@ describe('Crazymail', function ( cb ) {
     var
       opt = {
         smtp: 2525
+        ,http: 64001 // Try a non-standard port here
         ,host: 'localhost'
         // ,log: true
       },
@@ -41,7 +43,12 @@ describe('Crazymail', function ( cb ) {
 
     it('will send the mailbox over http', function( cb ) {
       request( {
-        url: 'http://localhost:7319/mailbox',
+        url: urllib.format( {
+          port: opt.http,
+          protocol: 'http:',
+          hostname: 'localhost',
+          pathname: '/mailbox'
+        }),
         json: true
       }, function ( err, headers, body ) {
         assert.isArray( body )

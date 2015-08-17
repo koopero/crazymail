@@ -14,13 +14,25 @@ function Client( opt ) {
   const
     self = this
 
-  self.url = 'http://localhost:7319'
+  if ( opt.http === true ) {
+    opt.http = 7319
+  }
+
+  if ( !isNaN( parseInt( opt.http ) ) ) {
+    self.url = urllib.format( {
+      protocol: 'http:',
+      hostname: opt.host || 'localhost',
+      port: opt.http
+    })
+  } else {
+    self.url = opt.http 
+  }
+
   self.random = new Random( opt )
   self.smtp = new SMTPClient( opt )
   self.send = send
   self.receive = receive
   self.flood = flood
-
 
   function send () {
     var msg = Util.congeal( {

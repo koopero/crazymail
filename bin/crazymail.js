@@ -19,6 +19,8 @@ var argConfig = {
   'log': [ [ '-v', '--verbose'], { help: 'Log all messages', action: 'storeTrue', dest: 'log' }  ],
   'subject': [ [ '--subject'], { help: 'Subject' }  ],
   'host': [ [ '--host'], { help: 'Hostname' }  ],
+  'smtp': [ [ '--smtp'], { help: 'Port for SMTP ( default: 25 )' }  ],
+  'http': [ [ '--http'], { help: 'Port for HTTP ( default: 7319 )' }  ],
   'firstName': [ [ '--first'], { help: 'First name', dest: 'firstName' }  ],
   'middleName': [ [ '--middle'], { help: 'Middle name', dest: 'middleName' } ],
   'lastName': [ [ '--last'], { help: 'Last name', dest: 'lastName' }  ],
@@ -30,11 +32,11 @@ var argConfig = {
 var commands = {
   'server': {
     help: 'Start server',
-    args: ['log']
+    args: ['smtp','http','log']
   },
   'receive': {
     help: 'receive a message from a server',
-    args: []
+    args: ['host']
   },
   'name': {
     help: 'Return a random funny name.',
@@ -103,7 +105,7 @@ var commands = {
     var
       client = new Crazymail.Client( args )
 
-    finish( client.send( args ) )
+    finish( client.send( args ), true )
   },
 
   flood: function (){
@@ -117,7 +119,7 @@ var commands = {
     var
       server = new Crazymail.Server( args )
 
-    finish( server.open() )
+    finish( server.open(), true )
   },
 
   receive: function() {
@@ -132,15 +134,16 @@ var commands = {
 
 commands[ args.command ]( )
 
-function finish( promise ) {
+function finish( promise, quiet ) {
   Promise.resolve( promise ).then( function ( result ) {
-    if ( result )
+    if ( result && !quiet )
       writeJSON( result )
   }).catch( function( err ) {
     console.error( err )
     process.exit( 1 )
   })
 }
+
 
 function writeJSON( data ) {
   const str = JSON.stringify( data, null, 2 )

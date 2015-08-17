@@ -21,6 +21,7 @@ function SMTPServer ( opt ) {
     serverOpt = _.extend( {}, opt ),
     simpleServer = require('simplesmtp').createSimpleServer( serverOpt, onRequest )
 
+
   self.open = open
   self.close = close
 
@@ -43,9 +44,14 @@ function SMTPServer ( opt ) {
     req.pipe( parser )
   }
 
+  function onError( err ) {
+    console.log("Error", err)
+  }
+
   function open() {
     return new Promise( function ( resolve, reject ) {
       var port = parseInt( opt.smtp ) || 25
+
       simpleServer.listen( port, function ( err ) {
         if ( err ) {
           reject( new Errors.PortError( err, port ) )
@@ -53,6 +59,12 @@ function SMTPServer ( opt ) {
           resolve()
         }
       })
+      // var thatThingThrowingErrors = simpleServer.server.SMTPServer._server
+      // console.log( 'thatThingThrowingErrors', thatThingThrowingErrors )
+      // thatThingThrowingErrors.on('error', function () {
+      //   console.log( "Found it!")
+      // })
+
     })
   }
 

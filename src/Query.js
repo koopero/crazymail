@@ -28,6 +28,9 @@ function Query() {
   if ( !query.after )
     delete query.after
 
+  if ( !query.address )
+    delete query.address
+
   // Hide query.match so it doesn't get serialized be url.format
   Object.defineProperty( query, 'match', {
     value: match

@@ -67,7 +67,7 @@ function HTTPServer( opt ) {
 
   function open ( ) {
     return new Promise( function ( resolve, reject ) {
-      self.server = app.listen( parseInt( opt.listen ) || 7319, function ( err ) {
+      self.server = app.listen( parseInt( opt.http ) || 7319, function ( err ) {
         if ( err )
           reject( err )
         else
