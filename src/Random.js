@@ -40,13 +40,13 @@ function Random() {
     }, arguments )
 
     if ( !person.name ) {
-      if ( chance( 0.93 ) )
+      if ( chance( 1 ) )
         person.firstName = person.firstName || self.firstName( arguments )
 
       if ( chance( 0.4 ) )
         person.middleName = person.middleName || self.middleName( arguments )
 
-      if ( !person.firstName || chance( 0.96 ) )
+      if ( !person.firstName || chance( 1 ) )
         person.lastName = person.lastName || self.lastName( arguments )
 
       person.name = _( [ person.firstName, person.middleName, person.lastName ] ).compact().join(' ')
