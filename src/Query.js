@@ -15,6 +15,8 @@ Query.match = function ( query, msg ) {
 function Query() {
   const query = Util.congeal({
     'address': '',
+    'to': '',
+    'from': '',
     'index': '',
     'after': ''
   }, arguments )
@@ -31,6 +33,12 @@ function Query() {
   if ( !query.address )
     delete query.address
 
+  if ( !query.to )
+    delete query.to
+
+  if ( !query.from )
+    delete query.from
+
   // Hide query.match so it doesn't get serialized be url.format
   Object.defineProperty( query, 'match', {
     value: match
@@ -46,6 +54,17 @@ function Query() {
       )
         return false
     }
+
+    if ( query.to ) {
+      if ( !checkAddress( msg.to, query.address ) )
+        return false
+    }
+
+    if ( query.from ) {
+      if ( !checkAddress( msg.from, query.address ) )
+        return false
+    }
+
 
     return true
     function checkAddress( haystack, needle ) {
