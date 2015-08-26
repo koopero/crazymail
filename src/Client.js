@@ -4,6 +4,7 @@ const
   _ = require('lodash'),
   Query = require('./Query'),
   Random = require('./Random'),
+  Promise = require('bluebird'),
   SMTPClient = require('./SMTPClient'),
   Log = require('./Log'),
   Util = require('./Util'),
@@ -25,7 +26,7 @@ function Client( opt ) {
       port: opt.http
     })
   } else {
-    self.url = opt.http 
+    self.url = opt.http
   }
 
   self.random = new Random( opt )
