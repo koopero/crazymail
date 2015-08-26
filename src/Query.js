@@ -56,12 +56,12 @@ function Query() {
     }
 
     if ( query.to ) {
-      if ( !checkAddress( msg.to, query.address ) )
+      if ( !checkAddress( msg.to, query.to ) )
         return false
     }
 
     if ( query.from ) {
-      if ( !checkAddress( msg.from, query.address ) )
+      if ( !checkAddress( msg.from, query.from ) )
         return false
     }
 
