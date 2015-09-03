@@ -1,6 +1,6 @@
 {
   "name": "crazymail",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A crazy simple SMTP server designed for autmated testing of web applications",
   "main": "index.js",
   "bin": {
