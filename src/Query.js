@@ -27,8 +27,10 @@ function Query() {
   else
     query.index = parseInt( query.index ) || 0
 
-  if ( !query.after )
+  if ( query.after == '' )
     delete query.after
+  else
+    query.after = parseInt( query.after ) || 0
 
   if ( !query.address )
     delete query.address
@@ -39,7 +41,7 @@ function Query() {
   if ( !query.from )
     delete query.from
 
-  // Hide query.match so it doesn't get serialized be url.format
+  // Hide query.match so it doesn't get serialized by url.format
   Object.defineProperty( query, 'match', {
     value: match
   })
@@ -65,6 +67,15 @@ function Query() {
         return false
     }
 
+    if ( query.after ) {
+      if ( msg.id <= query.after )
+        return false
+    }
+
+    if ( query.index ) {
+      if ( msg.id != query.index )
+        return false
+    }
 
     return true
     function checkAddress( haystack, needle ) {
