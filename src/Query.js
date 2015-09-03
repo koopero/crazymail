@@ -67,13 +67,13 @@ function Query() {
         return false
     }
 
-    if ( query.after ) {
-      if ( msg.id <= query.after )
+    if ( query.after || query.after === 0 ) {
+      if ( msg.index <= query.after )
         return false
     }
 
-    if ( query.index ) {
-      if ( msg.id != query.index )
+    if ( query.index || query.index === 0) {
+      if ( msg.index != query.index )
         return false
     }
 
