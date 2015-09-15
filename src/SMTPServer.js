@@ -16,32 +16,34 @@ function SMTPServer ( opt ) {
     smtp: 25
   } )
 
-  const
-    self = this,
-    serverOpt = _.extend( {}, opt ),
-    simpleServer = require('simplesmtp').createSimpleServer( serverOpt, onRequest )
+  const self = this
+      , serverOpt = _.extend( {
+        logger: false,
+        onData: onData,
+        disabledCommands: ['STARTTLS','AUTH']
+      }, opt )
+      , smtpServer = new (require('smtp-server').SMTPServer)( serverOpt )
+
 
 
   self.open = open
   self.close = close
 
-  function onRequest( req ) {
+  function onData( stream, session, callback ) {
     const
       MailParser = require('mailparser').MailParser,
       parser = new MailParser()
 
     parser.on("headers", function(headers){
       if ( !headers )
-        req.reject()
-      else
-        req.accept()
-
+        callback( true )
     });
 
     parser.on("end", function(mail){
       self.emit( 'mail', mail )
+      callback()
     });
-    req.pipe( parser )
+    stream.pipe( parser )
   }
 
   function onError( err ) {
@@ -52,32 +54,17 @@ function SMTPServer ( opt ) {
     return new Promise( function ( resolve, reject ) {
       var port = parseInt( opt.smtp ) || 25
 
-      simpleServer.listen( port, function ( err ) {
+      smtpServer.listen( port, function ( err ) {
         if ( err ) {
           reject( new Errors.PortError( err, port ) )
         } else {
           resolve()
         }
       })
-      // var thatThingThrowingErrors = simpleServer.server.SMTPServer._server
-      // console.log( 'thatThingThrowingErrors', thatThingThrowingErrors )
-      // thatThingThrowingErrors.on('error', function () {
-      //   console.log( "Found it!")
-      // })
-
     })
   }
 
   function close() {
-    return new Promise( function ( resolve, reject ) {
-      simpleServer.server.end( function ( err ) {
-        if ( err )
-          reject( err )
-        else {
-          resolve()
-        }
-      })
-    } )
-
+    return Promise.promisify( smtpServer.close, smtpServer )
   }
 }
