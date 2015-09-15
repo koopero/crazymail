@@ -7,8 +7,8 @@ const
 
 
 var argConfig = {
-  'rate': [
-    [ '-r', '--rate'],
+  'delay': [
+    [ '--delay'],
     {
       action: 'store',
       type: 'int',
@@ -52,7 +52,7 @@ var commands = {
   'send': {
     args: ['log','firstName','middleName','lastName','subject','host','unicode']
   },
-  'flood': { args: ['log','firstName','middleName','lastName','subject','rate','host','unicode']},
+  'flood': { args: ['smtp', 'log','firstName','middleName','lastName','subject','delay','host','unicode']},
   'message': { args: [] }
 }
 
