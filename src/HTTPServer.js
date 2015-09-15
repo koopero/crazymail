@@ -1,9 +1,10 @@
 module.exports = HTTPServer
 
-const
-  Errors = require('./Errors'),
-  Random = require('./Random'),
-  express = require('express')
+const Errors = require('./Errors')
+    , Random = require('./Random')
+    , Log = require('./Log')
+    , express = require('express')
+    
 function HTTPServer( opt ) {
 
   const
@@ -66,8 +67,12 @@ function HTTPServer( opt ) {
   }
 
   function open ( ) {
+    var port = parseInt( opt.http ) || 7319
+    if ( opt.log )
+      Log.listen( 'http', port, opt.host || '0.0.0.0' )
+
     return new Promise( function ( resolve, reject ) {
-      self.server = app.listen( parseInt( opt.http ) || 7319, function ( err ) {
+      self.server = app.listen( port, function ( err ) {
         if ( err )
           reject( err )
         else

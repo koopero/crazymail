@@ -42,6 +42,7 @@ function Server( opt ) {
     if ( opt.smtp ) {
       self.smtp = new SMTPServer( opt )
       self.smtp.on('mail', onMessage )
+      self.smtp.on('error', onError )
       promises.push( self.smtp.open() )
     }
 
@@ -63,6 +64,17 @@ function Server( opt ) {
 
     self.mailbox.add( mesg )
     self.queue.send( mesg )
+  }
+
+  function onError( err ) {
+    if ( opt.log ) {
+      Log.error( 'Server', 'closing due to error' )
+    }
+    try {
+      close()
+    } catch ( err ) {
+
+    }
   }
 
   function close() {

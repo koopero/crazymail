@@ -2,6 +2,14 @@ const
   _ = require('lodash'),
   chalk = require('chalk')
 
+exports.error = function ( system, message ) {
+  console.log( chalk.bold.red ('ERROR '+system+' '+message ) )
+}
+
+exports.listen = function ( proto, port, host ) {
+  console.log( chalk.bold.green ('LISTEN '+proto+' '+port+' '+host ) )
+}
+
 exports.send = function ( mesg ) {
   console.log()
   console.log( chalk.bold.red ('SEND') )
