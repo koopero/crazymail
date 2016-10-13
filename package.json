@@ -1,6 +1,6 @@
 {
   "name": "crazymail",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A crazy simple SMTP server designed for autmated testing of web applications",
   "main": "index.js",
   "bin": {
@@ -12,7 +12,7 @@
     "url": "https://github.com/koopero/crazymail"
   },
   "keywords": [
-    "smpt",
+    "smtp",
     "email",
     "crazy",
     "automated test"
@@ -20,16 +20,16 @@
   "preferGlobal": true,
   "license": "ISC",
   "dependencies": {
-    "argparse": "^1.0.2",
-    "bluebird": "^2.9.34",
-    "chalk": "^1.1.0",
+    "argparse": "^1.0.9",
+    "bluebird": "^2.11.0",
+    "chalk": "^1.1.3",
     "emailjs": "^0.3.16",
-    "express": "^4.13.3",
+    "express": "^4.14.0",
     "get-stdin": "^4.0.1",
     "lodash": "^3.10.1",
-    "mailparser": "^0.5.2",
-    "request": "^2.60.0",
-    "smtp-server": "^1.5.0",
+    "mailparser": "^0.5.3",
+    "request": "^2.75.0",
+    "smtp-server": "^1.15.0",
     "transliteration": "^0.1.1"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@
 # Example
 
 ### Server setup
-```sh
+``` sh
 # On publicly facing server example.com
 npm install -g crazymail
 
@@ -12,7 +12,7 @@ sudo crazymail server --host example.com
 ```
 
 ### Your test
-```javascript
+``` javascript
 var Crazymail = require('crazymail')
 
 // Assuming there is a Crazymail server at 'example.com'
@@ -35,6 +35,10 @@ var person = Crazyclient.random.person()
 your_automated_test( person )
 
 // Receive email sent to `person`
+// You need not worry about the timing of this call.
+// The server will cache the message for a reasonable
+// amount of time and keep the connection open
+// if it hasn't arrived yet.
 Crazyclient.receive( person )
   .then( function ( message ) {
     console.log( 'You got mail!', message )
