@@ -1,6 +1,6 @@
 {
   "name": "crazymail",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "A crazy simple SMTP server designed for autmated testing of web applications",
   "main": "index.js",
   "bin": {
@@ -30,7 +30,8 @@
     "mailparser": "^0.5.3",
     "request": "^2.75.0",
     "smtp-server": "^1.15.0",
-    "transliteration": "^0.1.1"
+    "sync-request": "^3.0.1",
+    "transliteration": "^1.1.11"
   },
   "devDependencies": {
     "chai": "^3.2.0"

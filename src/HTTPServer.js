@@ -4,7 +4,7 @@ const Errors = require('./Errors')
     , Random = require('./Random')
     , Log = require('./Log')
     , express = require('express')
-    
+
 function HTTPServer( opt ) {
 
   const
@@ -28,6 +28,10 @@ function HTTPServer( opt ) {
     app.get('/random/person', function ( req, res ) {
       var person = Random.person( opt )
       res.send( Random.person( opt, req.query ) )
+    })
+
+    app.get('/ping', function ( req, res ) {
+      res.json( 'pong' )
     })
 
     app.get('/mailbox', function ( req, res ) {

@@ -6,6 +6,7 @@ exports.isAscii = function ( str ) {
 }
 
 exports.parseAddress = function ( str ) {
+  var nameAndAddress
   if ( nameAndAddress = /(.*?)<(.*?@.*?)>/.exec( str )) {
     return {
       name: _.trim( nameAndAddress[1] ),

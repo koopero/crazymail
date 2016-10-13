@@ -18,13 +18,9 @@ describe('Crazymail', function ( cb ) {
       client,
       person
 
-    it( 'start the server', function ( cb ) {
+    it( 'start the server', function () {
       server = new Crazymail.Server( opt )
-      server.open().then( function() {
-        cb()
-      } ).catch( function ( err ) {
-        cb( err )
-      })
+      return server.open()
     })
 
     it( 'start the client', function ( ) {

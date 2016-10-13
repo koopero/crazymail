@@ -9,7 +9,8 @@ const
   Log = require('./Log'),
   Util = require('./Util'),
   urllib = require('url'),
-  request = require('request')
+  request = require('request'),
+  syncRequest = require('sync-request')
 
 function Client( opt ) {
   const
@@ -29,11 +30,35 @@ function Client( opt ) {
     self.url = opt.http
   }
 
+  self.pingSync = pingSync
   self.random = new Random( opt )
   self.smtp = new SMTPClient( opt )
   self.send = send
   self.receive = receive
   self.flood = flood
+
+  /**
+   * Make a synchronous request to the server to ensure
+   * that it is ready to go.
+   */
+  function pingSync() {
+    const url = httpURL( 'ping' )
+    try {
+
+      const response = syncRequest( 'GET', url, {
+        timeout: 500
+      } )
+
+      if ( response.statusCode != 200 )
+        return false
+
+      const data = JSON.parse( response.body )
+      return data == 'pong'
+    } catch ( error ) {
+      return false
+    }
+
+  }
 
   function send () {
     var msg = Util.congeal( {

@@ -104,7 +104,7 @@ function Random() {
 
     var name = segs.join(' ')
     name = name.toLowerCase()
-    name = transliteration( name )
+    name = transliteration.transliterate( name )
     name = name.replace( /[^a-z0-9]+/g, self.delimiter )
 
 
